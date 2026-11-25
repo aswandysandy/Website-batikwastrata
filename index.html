@@ -2,8 +2,14 @@
 <html lang="id">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <title>BatikWastrata.id — Sewa Batik & Wastra Makassar</title>
+
+  <!-- Google Fonts: Playfair Display & DM Sans -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=Playfair+Display:ital,wght@0,600;0,700;1,400;1,600;1,700&display=swap" rel="stylesheet">
+
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -15,7 +21,7 @@
         <img src="logo.png" alt="Logo BatikWastrata" class="brand-logo">
         <span class="brand-name">BATIKWASTRATA.ID</span>
       </a>
-      <nav class="navlinks" id="navlinks">
+      <nav class="navlinks" id="navlinks" aria-label="Navigasi utama">
         <a class="active" href="#beranda">Beranda</a>
         <a href="#koleksi">Koleksi</a>
         <a href="#katalog-ig">Pilih dari IG</a>
@@ -23,13 +29,29 @@
         <a href="#kontak">Kontak</a>
       </nav>
       <div class="actions">
-        <a class="btn btn-primary" href="#kontak">Konsultasi Sewa <span aria-hidden="true">↗</span></a>
-        <button class="menu-toggle" id="menuToggle" aria-label="Buka menu" aria-expanded="false">
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12h18M3 6h18M3 18h18"/></svg>
-        </button>
+        <a class="btn btn-primary header-cta-desktop" href="#kontak">Konsultasi Sewa <span aria-hidden="true">↗</span></a>
+        <a class="btn btn-wa-direct header-cta-mobile" href="https://wa.me/62882020677022" target="_blank" rel="noreferrer" aria-label="Chat WhatsApp Admin">
+          Chat WA <span aria-hidden="true">↗</span>
+        </a>
       </div>
     </div>
   </header>
+
+  <!-- FLOATING PILL NAVIGATION (Desktop & Tablet saat scroll) -->
+  <nav class="floating-pill" id="floatingPill" aria-label="Navigasi cepat melayang">
+    <a href="#beranda" class="floating-pill-brand" aria-label="Kembali ke atas">
+      <span class="pill-dot" aria-hidden="true"></span>
+      <span>BW</span>
+    </a>
+    <div class="floating-pill-links">
+      <a href="#beranda" class="active">Beranda</a>
+      <a href="#koleksi">Koleksi</a>
+      <a href="#katalog-ig">Pilih IG</a>
+      <a href="#cara-sewa">Cara Sewa</a>
+      <a href="#kontak">Kontak</a>
+    </div>
+    <a href="#kontak" class="btn btn-primary floating-pill-cta">Sewa <span>↗</span></a>
+  </nav>
   
   <main>
     <!-- HERO SECTION -->
@@ -37,13 +59,13 @@
       <div class="wrap hero-grid">
         <div class="hero-content">
           <span class="eyebrow hero-anim" style="--d: 0.05s">Wastra lokal, karakter personal</span>
-          <h1 class="hero-anim" style="--d: 0.15s">Warisan budaya.<br><em>Gaya yang</em> bercerita.</h1>
-          <p class="hero-copy hero-anim" style="--d: 0.25s">Temukan busana batik dan wastra untuk momen istimewa dari wisuda hingga acara formal. Pilih koleksi di sini atau tempel link foto dari Instagram kami, lalu langsung terhubung ke WhatsApp Admin.</p>
-          <div class="hero-buttons hero-anim" style="--d: 0.35s">
+          <h1 class="hero-anim" style="--d: 0.14s">Warisan budaya.<br><em>Gaya yang</em> bercerita.</h1>
+          <p class="hero-copy hero-anim" style="--d: 0.22s">Temukan busana batik dan wastra untuk momen istimewa dari wisuda hingga acara formal. Pilih koleksi di sini atau tempel link foto dari Instagram kami, lalu langsung terhubung ke WhatsApp Admin.</p>
+          <div class="hero-buttons hero-anim" style="--d: 0.30s">
             <a class="btn btn-primary" href="#koleksi">Jelajahi Koleksi <span>↗</span></a>
             <a class="btn btn-outline" href="#cara-sewa">Lihat Cara Sewa</a>
           </div>
-          <div class="trust-row hero-anim" style="--d: 0.45s">
+          <div class="trust-row hero-anim" style="--d: 0.38s">
             <div class="trust-icons">
               <span>W</span><span>B</span><span>✳</span>
             </div>
@@ -52,7 +74,7 @@
         </div>
         
         <!-- Gambar Hero -->
-        <div class="hero-art hero-anim" style="--d: 0.25s" aria-label="Koleksi Busana Wastra">
+        <div class="hero-art hero-anim" style="--d: 0.22s" aria-label="Koleksi Busana Wastra">
           <img src="Screenshot 2026-10-21 234714.png" alt="Wastra Lokal Makassar" class="hero-img">
           <div class="seal">LOCAL<br>HERITAGE<br>✳</div>
           <div class="art-label">
@@ -64,9 +86,9 @@
     </section>
 
     <!-- VALUE STRIP SECTION -->
-    <div class="value-strip reveal">
+    <div class="value-strip motion-section">
       <div class="wrap value-grid">
-        <div class="value stagger-item" style="--i: 0">
+        <div class="value motion-card" data-stagger="0">
           <div class="value-icon">
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
           </div>
@@ -75,7 +97,7 @@
             <span>Pilihan couple maupun satuan untuk beragam acara.</span>
           </div>
         </div>
-        <div class="value stagger-item" style="--i: 1">
+        <div class="value motion-card" data-stagger="1">
           <div class="value-icon">
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="20" x="2" y="2" rx="5" ry="5"></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path><line x1="17.5" x2="17.51" y1="6.5" y2="6.5"></line></svg>
           </div>
@@ -84,7 +106,7 @@
             <span>Salin link foto baju di IG lalu kirim langsung ke WA.</span>
           </div>
         </div>
-        <div class="value stagger-item" style="--i: 2">
+        <div class="value motion-card" data-stagger="2">
           <div class="value-icon">
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"></path><circle cx="12" cy="10" r="3"></circle></svg>
           </div>
@@ -97,7 +119,7 @@
     </div>
 
     <!-- KOLEKSI SECTION -->
-    <section class="content reveal" id="koleksi">
+    <section class="content motion-section" id="koleksi">
       <div class="wrap">
         <div class="section-head">
           <div>
@@ -108,7 +130,7 @@
         </div>
         <div class="catalogue">
           <!-- Produk 1 -->
-          <article class="product stagger-item" style="--i: 0">
+          <article class="product motion-card" data-stagger="0">
             <div class="product-visual" data-zoom-src="Screenshot 2026-10-21 234714.png" data-zoom-title="Athena Rose — Wastra Premium">
               <span class="product-tag">Pilihan elegan</span>
               <img src="Screenshot 2026-10-21 234714.png" alt="Athena Rose" class="product-img">
@@ -126,7 +148,7 @@
           </article>
           
           <!-- Produk 2 -->
-          <article class="product stagger-item" style="--i: 1">
+          <article class="product motion-card" data-stagger="1">
             <div class="product-visual" data-zoom-src="Screenshot 2026-10-21 234932.png" data-zoom-title="Lontara In Moon — Motif Lontara">
               <span class="product-tag">Cerita lokal</span>
               <img src="Screenshot 2026-10-21 234932.png" alt="Lontara In Moon" class="product-img">
@@ -144,7 +166,7 @@
           </article>
           
           <!-- Produk 3 -->
-          <article class="product stagger-item" style="--i: 2">
+          <article class="product motion-card" data-stagger="2">
             <div class="product-visual" data-zoom-src="Screenshot 2026-10-21 235016.png" data-zoom-title="Imperial Ethnic — Statement Look">
               <span class="product-tag">Statement look</span>
               <img src="Screenshot 2026-10-21 235016.png" alt="Imperial Ethnic" class="product-img">
@@ -163,7 +185,7 @@
         </div>
 
         <!-- KARTU KATALOG INSTAGRAM & KIRIM LINK FOTO LANGSUNG KE WHATSAPP -->
-        <div class="ig-banner reveal" id="katalog-ig">
+        <div class="ig-banner motion-card" id="katalog-ig" data-stagger="0">
           <div class="ig-banner-top">
             <div class="ig-banner-content">
               <span class="eyebrow">Lebih banyak pilihan di Instagram</span>
@@ -210,7 +232,7 @@
     </section>
 
     <!-- CARA SEWA — 6 LANGKAH PEMESANAN -->
-    <section class="content process reveal" id="cara-sewa">
+    <section class="content process motion-section" id="cara-sewa">
       <div class="wrap">
         <div class="section-head">
           <div>
@@ -222,7 +244,7 @@
 
         <div class="steps">
           <!-- Langkah 1 -->
-          <article class="step stagger-item" style="--i: 0">
+          <article class="step motion-card" data-stagger="0">
             <div class="step-top">
               <div class="step-num">01</div>
               <span class="step-phase">Pilih koleksi</span>
@@ -232,7 +254,7 @@
           </article>
 
           <!-- Langkah 2 -->
-          <article class="step stagger-item" style="--i: 1">
+          <article class="step motion-card" data-stagger="1">
             <div class="step-top">
               <div class="step-num">02</div>
               <span class="step-phase">Kirim permintaan</span>
@@ -242,7 +264,7 @@
           </article>
 
           <!-- Langkah 3 -->
-          <article class="step stagger-item" style="--i: 2">
+          <article class="step motion-card" data-stagger="2">
             <div class="step-top">
               <div class="step-num">03</div>
               <span class="step-phase">Konfirmasi admin</span>
@@ -252,7 +274,7 @@
           </article>
 
           <!-- Langkah 4 -->
-          <article class="step stagger-item" style="--i: 3">
+          <article class="step motion-card" data-stagger="3">
             <div class="step-top">
               <div class="step-num">04</div>
               <span class="step-phase">Pembayaran</span>
@@ -262,7 +284,7 @@
           </article>
 
           <!-- Langkah 5 -->
-          <article class="step stagger-item" style="--i: 4">
+          <article class="step motion-card" data-stagger="4">
             <div class="step-top">
               <div class="step-num">05</div>
               <span class="step-phase">Nota & pengambilan</span>
@@ -272,7 +294,7 @@
           </article>
 
           <!-- Langkah 6 -->
-          <article class="step stagger-item" style="--i: 5">
+          <article class="step motion-card" data-stagger="5">
             <div class="step-top">
               <div class="step-num">06</div>
               <span class="step-phase">Pengembalian</span>
@@ -283,7 +305,7 @@
         </div>
 
         <!-- Aksi cepat dan pengingat jam operasional -->
-        <div class="process-cta-bar reveal">
+        <div class="process-cta-bar motion-card" data-stagger="0">
           <div>
             <strong>Siap memesan busana untuk acaramu?</strong>
             <span>Mulai dengan memilih koleksi. Admin akan membantu mengecek ketersediaan, ukuran, tanggal, dan rincian biaya sebelum pembayaran dilakukan.</span>
@@ -301,12 +323,12 @@
     </section>
 
     <!-- KONTAK SECTION -->
-    <section class="content reveal" id="kontak">
+    <section class="content motion-section" id="kontak">
       <div class="wrap booking-layout">
         <div class="booking-copy">
           <span class="eyebrow">Mulai percakapan</span>
           <h2>Temukan busana untuk momenmu.</h2>
-          <p>Isi detail sewa dan pilih metode pembayaran. Website akan membuat nota konsultasi sementara yang bisa dicetak atau dikirim ke WhatsApp Admin.</p>
+          <p>Isi detail sewa dan pilih metode pembayaran. Website akan membuat nota konsultasi sementara yang bisa diunduh otomatis, dicetak, atau dikirim ke WhatsApp Admin.</p>
           
           <div class="contact-list">
             <a href="https://maps.app.goo.gl/rmsGHTmBjWrQVzkR8" target="_blank" rel="noreferrer" class="contact-item link-hover">
@@ -332,7 +354,7 @@
           </div>
         </div>
         
-        <form class="booking-form" id="rentForm">
+        <form class="booking-form motion-card" id="rentForm" data-stagger="1">
           <h3>Form konsultasi sewa</h3>
           <p class="sub">Lengkapi data pesanan agar admin dapat memeriksa ketersediaan dan menyiapkan rincian transaksi.</p>
 
@@ -431,7 +453,7 @@
               <input id="notes" name="notes" placeholder="Ukuran, jenis acara, atau permintaan antar/ambil">
             </div>
           </div>
-          <p class="form-note">Setelah formulir dikirim, kamu akan melihat nota konsultasi sementara. Admin akan mengonfirmasi stok, harga, dan detail pembayaran sebelum transaksi diselesaikan.</p>
+          <p class="form-note">Setelah formulir dikirim, kamu akan melihat nota konsultasi sementara. Admin juga mendapatkan tautan nota yang langsung mengunduh salinan nota secara otomatis.</p>
           <button class="btn btn-primary" type="submit">Buat nota pemesanan <span>↗</span></button>
           <div class="notice" id="notice" role="status"></div>
         </form>
@@ -486,17 +508,54 @@
     </div>
   </footer>
 
-  <!-- Floating WA Button Kanan Bawah -->
+  <!-- Floating WA Pill Kanan Bawah -->
   <a href="https://wa.me/62882020677022" id="floatingWaBtn" class="floating-wa" target="_blank" rel="noreferrer" aria-label="Chat WhatsApp Admin">
     <svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg>
+    <span class="floating-wa-label">Chat Admin</span>
   </a>
 
+  <!-- BOTTOM TAB BAR UNTUK TAMPILAN MOBILE -->
+  <nav class="mobile-bottom-bar" id="mobileBottomBar" aria-label="Navigasi mobile">
+    <a href="#beranda" class="bottom-tab active" data-section="beranda">
+      <span class="tab-icon" aria-hidden="true">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+      </span>
+      <span class="tab-label">Beranda</span>
+    </a>
+    <a href="#koleksi" class="bottom-tab" data-section="koleksi">
+      <span class="tab-icon" aria-hidden="true">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="7" height="7" x="3" y="3" rx="1"/><rect width="7" height="7" x="14" y="3" rx="1"/><rect width="7" height="7" x="14" y="14" rx="1"/><rect width="7" height="7" x="3" y="14" rx="1"/></svg>
+      </span>
+      <span class="tab-label">Koleksi</span>
+    </a>
+    <a href="#katalog-ig" class="bottom-tab" data-section="katalog-ig">
+      <span class="tab-icon" aria-hidden="true">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="20" x="2" y="2" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" x2="17.51" y1="6.5" y2="6.5"/></svg>
+      </span>
+      <span class="tab-label">Pilih IG</span>
+    </a>
+    <a href="#cara-sewa" class="bottom-tab" data-section="cara-sewa">
+      <span class="tab-icon" aria-hidden="true">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><rect width="8" height="4" x="8" y="2" rx="1" ry="1"/><path d="m9 14 2 2 4-4"/></svg>
+      </span>
+      <span class="tab-label">Cara Sewa</span>
+    </a>
+    <a href="#kontak" class="bottom-tab" data-section="kontak">
+      <span class="tab-icon" aria-hidden="true">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="4" rx="2" ry="2"/><line x1="16" x2="16" y1="2" y2="6"/><line x1="8" x2="8" y1="2" y2="6"/><line x1="3" x2="21" y1="10" y2="10"/><path d="m9 16 2 2 4-4"/></svg>
+      </span>
+      <span class="tab-label">Sewa</span>
+    </a>
+  </nav>
 
-
-  <!-- MODAL NOTA KONSULTASI / PEMESANAN SEMENTARA -->
-  <div class="receipt-modal" id="receiptModal" aria-hidden="true">
-    <section class="receipt-dialog" role="dialog" aria-modal="true" aria-labelledby="receiptTitle">
+  <!-- MODAL NOTA KONSULTASI / PEMESANAN SEMENTARA (data-lenis-prevent agar scroll native aktif) -->
+  <div class="receipt-modal" id="receiptModal" aria-hidden="true" data-lenis-prevent>
+    <section class="receipt-dialog" role="dialog" aria-modal="true" aria-labelledby="receiptTitle" data-lenis-prevent>
       <button type="button" class="receipt-close" id="receiptClose" aria-label="Tutup nota">✕</button>
+
+      <!-- Notifikasi Status Download Otomatis -->
+      <div class="receipt-download-toast" id="receiptDownloadToast" hidden aria-live="polite"></div>
+
       <div class="receipt-paper" id="receiptPrintArea">
         <div class="receipt-topline"></div>
         <div class="receipt-brand-row">
@@ -532,23 +591,32 @@
         </div>
         <div class="receipt-footer"><span>Jam operasional: 08.00–22.00</span><span>WhatsApp Admin: 0882-0206-77022</span></div>
       </div>
+
       <div class="receipt-actions">
+        <button type="button" class="btn btn-outline" id="downloadReceiptPngBtn">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg>
+          Unduh Nota (PNG)
+        </button>
         <button type="button" class="btn btn-outline" id="printReceiptBtn">Cetak / Simpan PDF</button>
-        <button type="button" class="btn btn-primary" id="receiptWhatsAppBtn">Kirim ke WhatsApp Admin ↗</button>
+        <button type="button" class="btn btn-primary receipt-wa-full" id="receiptWhatsAppBtn">Kirim ke WhatsApp Admin ↗</button>
       </div>
-      <p class="receipt-modal-hint">Pilih “Cetak / Simpan PDF” untuk menyimpan nota ke perangkat.</p>
+      <p class="receipt-modal-hint">Saat dikirim ke WhatsApp, file gambar nota otomatis terunduh dan tautan nota admin disertakan agar Admin dapat mengunduh nota secara otomatis.</p>
     </section>
   </div>
 
   <!-- MODAL LIGHTBOX FOTO KOLEKSI -->
-  <div class="lightbox" id="imageLightbox" aria-hidden="true">
-    <div class="lightbox-card">
+  <div class="lightbox" id="imageLightbox" aria-hidden="true" data-lenis-prevent>
+    <div class="lightbox-card" data-lenis-prevent>
       <button type="button" class="lightbox-close" id="lightboxClose" aria-label="Tutup pratinjau">✕</button>
       <img src="" alt="" id="lightboxImg">
       <div class="lightbox-caption" id="lightboxCaption"></div>
     </div>
   </div>
 
+  <!-- Lenis Smooth Scroll, Motion & html2canvas -->
+  <script src="https://unpkg.com/lenis@1.1.18/dist/lenis.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/motion@11.11.13/dist/motion.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
   <script src="script.js"></script>
 </body>
 </html>
