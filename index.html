@@ -421,16 +421,33 @@
                 </label>
               </div>
               <div class="payment-details" id="paymentDetails" hidden aria-live="polite">
-                <div class="payment-detail-panel" data-payment-detail="QRIS" hidden>
-                  <div class="payment-visual-placeholder" id="qrisVisual" aria-label="Tempat kode QRIS resmi">
+                <!-- PANEL QRIS (RAPI, PROPORSIONAL & BISA DIUNDUH) -->
+                <div class="payment-detail-panel qris-showcase-panel" data-payment-detail="QRIS" hidden>
+                  <div class="qris-card-frame" id="qrisVisual" role="button" tabindex="0" title="Klik untuk memperbesar QRIS" aria-label="Kode QRIS resmi BatikWastrata.id">
                     <span class="placeholder-qr">QR</span>
                   </div>
-                  <div class="payment-detail-copy">
-                    <strong>Pembayaran melalui QRIS</strong>
-                    <p id="qrisMessage">Kode QRIS resmi akan diberikan admin setelah pesanan dan nominal pembayaran dikonfirmasi.</p>
-                    <small class="payment-safety-note">Pastikan nama merchant sesuai sebelum melakukan pembayaran.</small>
+                  <div class="payment-detail-copy qris-info-col">
+                    <div class="qris-header-badges">
+                      <span class="qris-merchant-pill">QRIS RESMI</span>
+                      <span class="qris-nmid-tag">NMID: ID1025441121486</span>
+                    </div>
+                    <strong>BATIKWASTRATA.ID</strong>
+                    <p id="qrisMessage">Unduh atau perbesar kode QRIS di samping, lalu pindai melalui aplikasi e-wallet atau mobile banking setelah nominal sewa dikonfirmasi admin.</p>
+                    <div class="qris-action-buttons" id="qrisActionButtons">
+                      <button type="button" class="qris-action-btn primary" id="downloadQrisBtn">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg>
+                        Unduh QRIS
+                      </button>
+                      <button type="button" class="qris-action-btn" id="zoomQrisBtn">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" x2="16.65" y1="21" y2="16.65"/><line x1="11" x2="11" y1="8" y2="14"/><line x1="8" x2="14" y1="11" y2="11"/></svg>
+                        Perbesar
+                      </button>
+                    </div>
+                    <small class="payment-safety-note">Pastikan nama merchant <strong>BATIKWASTRATA.ID</strong> sesuai sebelum menyelesaikan pembayaran.</small>
                   </div>
                 </div>
+
+                <!-- PANEL TRANSFER BANK -->
                 <div class="payment-detail-panel bank-detail-panel" data-payment-detail="Transfer Bank" hidden>
                   <div class="bank-detail-heading"><strong>Transfer ke rekening resmi</strong><span class="secure-label">Pembayaran aman</span></div>
                   <div class="bank-detail-row"><span>Bank</span><strong id="bankNameLabel">Dikonfirmasi oleh admin</strong></div>
@@ -439,11 +456,61 @@
                   <button type="button" class="copy-account-btn" id="copyAccountBtn" disabled>Salin nomor rekening</button>
                   <p class="payment-safety-note" id="bankMessage">Nomor rekening resmi perlu diatur oleh pengelola. Untuk sementara, silakan minta detail rekening melalui WhatsApp admin.</p>
                 </div>
+
+                <!-- PANEL TUNAI -->
                 <div class="payment-detail-panel cash-detail-panel" data-payment-detail="Tunai" hidden>
                   <span class="cash-icon" aria-hidden="true">Rp</span>
                   <div class="payment-detail-copy">
                     <strong>Pembayaran tunai</strong>
                     <p>Pembayaran dapat dilakukan saat pengambilan busana, setelah jadwal, nominal, dan ketentuan sewa disepakati dengan admin.</p>
+                  </div>
+                </div>
+
+                <!-- STATUS DETEKSI OTOMATIS & ANIMASI PEMBAYARAN SELESAI (QRIS / TRANSFER BANK) -->
+                <div class="payment-auto-tracker" id="paymentAutoTracker" data-state="waiting" hidden>
+                  <!-- State 1: Menunggu pembayaran -->
+                  <div class="tracker-view tracker-waiting">
+                    <div class="tracker-status-left">
+                      <span class="radar-dot" aria-hidden="true"></span>
+                      <div>
+                        <strong>Menunggu pembayaran</strong>
+                        <span id="trackerWaitingHint">Unduh QRIS / salin rekening, lalu bayar. Sistem otomatis mendeteksi saat kamu kembali.</span>
+                      </div>
+                    </div>
+                    <button type="button" class="tracker-confirm-btn" id="confirmPaidBtn">Saya Sudah Bayar ✓</button>
+                  </div>
+
+                  <!-- State 2: Animasi Mendeteksi Pembayaran -->
+                  <div class="tracker-view tracker-detecting" hidden>
+                    <div class="tracker-detect-row">
+                      <span class="detect-spinner" aria-hidden="true"></span>
+                      <div>
+                        <strong>Mendeteksi pembayaran secara otomatis...</strong>
+                        <span>Menyinkronkan status transaksi ke nota pesananmu</span>
+                      </div>
+                    </div>
+                    <div class="detect-progress-bar">
+                      <div class="detect-progress-fill"></div>
+                    </div>
+                  </div>
+
+                  <!-- State 3: Animasi Selesai Pembayaran -->
+                  <div class="tracker-view tracker-completed" hidden>
+                    <div class="completed-burst" aria-hidden="true">
+                      <span class="burst-ring"></span>
+                      <svg class="checkmark-svg" viewBox="0 0 52 52">
+                        <circle class="checkmark-circle" cx="26" cy="26" r="24" fill="none"/>
+                        <path class="checkmark-check" fill="none" d="M14.5 27.2l7.2 7.2 15.8-16.8"/>
+                      </svg>
+                    </div>
+                    <div class="completed-copy">
+                      <div class="completed-title-row">
+                        <strong>Pembayaran Selesai Terdeteksi!</strong>
+                        <span class="completed-pill">TERCATAT ✓</span>
+                      </div>
+                      <p id="completedTimeText">Pembayaran dicatat pada - · Akan dilampirkan otomatis pada nota & WhatsApp Admin.</p>
+                      <button type="button" class="tracker-reset-link" id="resetPaidStateBtn">Batalkan / Belum bayar</button>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -567,8 +634,8 @@
           <h2 id="receiptTitle">Nota Konsultasi Sewa</h2>
           <p>Dokumen ringkasan permintaan sewa pelanggan</p>
         </div>
-        <div class="receipt-status-row">
-          <span class="receipt-status">MENUNGGU KONFIRMASI ADMIN</span>
+        <div class="receipt-status-row" id="receiptStatusRow">
+          <span class="receipt-status" id="receiptStatusBadge">MENUNGGU KONFIRMASI ADMIN</span>
           <span class="receipt-code" id="receiptCode">BW-000000</span>
         </div>
         <div class="receipt-info-grid">
@@ -578,6 +645,7 @@
           <div><span>Tanggal penggunaan</span><strong id="receiptDate">-</strong></div>
           <div><span>Lokasi</span><strong id="receiptArea">-</strong></div>
           <div><span>Metode pembayaran</span><strong id="receiptPayment">-</strong></div>
+          <div class="receipt-full-row" id="receiptPaidTimeRow" hidden><span>Status pembayaran pelanggan</span><strong id="receiptPaidTime">-</strong></div>
           <div class="receipt-full-row" id="receiptIgRow" hidden><span>Link koleksi Instagram</span><strong id="receiptIGLink">-</strong></div>
           <div class="receipt-full-row" id="receiptNotesRow" hidden><span>Catatan</span><strong id="receiptNotes">-</strong></div>
         </div>
@@ -604,12 +672,18 @@
     </section>
   </div>
 
-  <!-- MODAL LIGHTBOX FOTO KOLEKSI -->
+  <!-- MODAL LIGHTBOX FOTO KOLEKSI & QRIS -->
   <div class="lightbox" id="imageLightbox" aria-hidden="true" data-lenis-prevent>
     <div class="lightbox-card" data-lenis-prevent>
       <button type="button" class="lightbox-close" id="lightboxClose" aria-label="Tutup pratinjau">✕</button>
       <img src="" alt="" id="lightboxImg">
-      <div class="lightbox-caption" id="lightboxCaption"></div>
+      <div class="lightbox-footer">
+        <div class="lightbox-caption" id="lightboxCaption"></div>
+        <button type="button" class="btn btn-primary lightbox-download-btn" id="lightboxDownloadBtn" hidden>
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg>
+          Unduh QRIS
+        </button>
+      </div>
     </div>
   </div>
 
