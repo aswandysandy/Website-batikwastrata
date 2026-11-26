@@ -1454,7 +1454,7 @@ footer {
 
 .lightbox-card {
   position: relative;
-  max-width: 480px;
+  max-width: 460px;
   width: 100%;
   background: #fff;
   border-radius: 20px;
@@ -1470,19 +1470,34 @@ footer {
 
 .lightbox-card img {
   width: 100%;
-  max-height: 72vh;
+  max-height: 70vh;
   object-fit: cover;
   display: block;
 }
 
+.lightbox-footer {
+  padding: 13px 16px;
+  background: var(--cream);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
 .lightbox-caption {
-  padding: 14px 18px;
   font-family: var(--font-display);
   font-weight: 600;
-  font-size: 16px;
+  font-size: 14.5px;
   color: var(--maroon);
-  background: var(--cream);
   text-align: center;
+  flex: 1;
+}
+
+.lightbox-download-btn {
+  padding: 8px 14px !important;
+  font-size: 11.5px !important;
+  white-space: nowrap;
+  flex: none;
 }
 
 .lightbox-close {
@@ -1493,12 +1508,13 @@ footer {
   height: 34px;
   border-radius: 50%;
   border: 0;
-  background: rgba(36, 21, 24, 0.75);
+  background: rgba(36, 21, 24, 0.78);
   color: #fff;
   cursor: pointer;
   font-size: 14px;
   display: grid;
   place-items: center;
+  z-index: 3;
 }
 
 /* =====================================================
@@ -1577,7 +1593,7 @@ html.motion-enabled .motion-card {
 }
 
 /* =====================================================
-   PEMBAYARAN & NOTA PEMESANAN (SCROLL FIX + AUTO DOWNLOAD)
+   PEMBAYARAN QRIS PROPORSIONAL & DETEKSI OTOMATIS
    ===================================================== */
 [hidden] { display: none !important; }
 
@@ -1672,9 +1688,9 @@ html.motion-enabled .motion-card {
 .payment-details {
   margin-top: 13px;
   border: 1px solid #ead9d3;
-  border-radius: 15px;
+  border-radius: 16px;
   background: #fcf8f4;
-  padding: 16px;
+  padding: 18px;
   animation: paymentReveal .25s ease both;
 }
 
@@ -1683,20 +1699,65 @@ html.motion-enabled .motion-card {
   to { opacity: 1; transform: translateY(0); }
 }
 
-.payment-detail-panel { display: flex; align-items: center; gap: 15px; }
-.payment-visual-placeholder {
-  flex: 0 0 92px;
-  width: 92px;
-  height: 92px;
-  display: grid;
-  place-items: center;
-  border: 1px dashed #c9aaa1;
-  border-radius: 12px;
-  background: #fff;
+.payment-detail-panel { display: flex; align-items: center; gap: 18px; }
+
+/* Bingkai Kartu QRIS Proporsional (Tidak terpotong / keluar garis) */
+.qris-showcase-panel {
+  align-items: stretch;
 }
+
+.qris-card-frame {
+  flex: 0 0 154px;
+  width: 154px;
+  border-radius: 14px;
+  background: #ffffff;
+  border: 1.5px solid #e5cfc8;
+  padding: 7px;
+  box-shadow: 0 10px 24px rgba(107, 23, 36, 0.1);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+  cursor: zoom-in;
+  transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+}
+
+.qris-card-frame:hover {
+  transform: translateY(-2px);
+  border-color: var(--red);
+  box-shadow: 0 14px 30px rgba(107, 23, 36, 0.16);
+}
+
+.qris-card-frame img {
+  width: 100%;
+  height: auto;
+  display: block;
+  border-radius: 9px;
+  object-fit: contain;
+}
+
+.qris-zoom-badge {
+  position: absolute;
+  bottom: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(36, 21, 24, 0.84);
+  color: #fff9da;
+  font-size: 9.5px;
+  font-weight: 700;
+  padding: 4px 9px;
+  border-radius: 999px;
+  white-space: nowrap;
+  pointer-events: none;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
+}
+
 .placeholder-qr {
-  width: 54px;
-  height: 54px;
+  width: 64px;
+  height: 64px;
+  margin: 28px 0;
   display: grid;
   place-items: center;
   border: 3px solid #9d7a72;
@@ -1704,21 +1765,88 @@ html.motion-enabled .motion-card {
   outline-offset: -11px;
   color: var(--maroon);
   font-family: var(--font-display);
-  font-size: 15px;
+  font-size: 16px;
   font-weight: 700;
 }
-.payment-visual-placeholder img {
-  width: 100%;
-  height: 100%;
-  object-fit: contain;
-  padding: 7px;
+
+.qris-info-col {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 }
+
+.qris-header-badges {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 6px;
+}
+
+.qris-merchant-pill {
+  background: var(--maroon);
+  color: #fff9da;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  padding: 3px 8px;
+  border-radius: 999px;
+}
+
+.qris-nmid-tag {
+  background: #f2e5df;
+  color: var(--maroon);
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 9.5px;
+  font-weight: 700;
+  padding: 3px 8px;
+  border-radius: 999px;
+}
+
+.qris-action-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 11px;
+}
+
+.qris-action-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 13px;
+  border-radius: 10px;
+  border: 1px solid #d9bdb5;
+  background: #ffffff;
+  color: var(--maroon);
+  font-size: 11px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease, transform 0.15s ease;
+}
+
+.qris-action-btn:hover {
+  border-color: var(--maroon);
+  background: #fff4ed;
+}
+
+.qris-action-btn.primary {
+  background: var(--maroon);
+  border-color: var(--maroon);
+  color: #ffffff;
+}
+
+.qris-action-btn.primary:hover {
+  background: var(--red);
+  border-color: var(--red);
+}
+
 .payment-detail-copy { min-width: 0; }
 .payment-detail-copy strong,
-.bank-detail-heading strong { display: block; margin-bottom: 4px; color: var(--maroon); font-size: 13px; }
+.bank-detail-heading strong { display: block; margin-bottom: 4px; color: var(--maroon); font-size: 13.5px; }
 .payment-detail-copy p,
 .payment-safety-note { margin: 0; color: var(--muted); font-size: 11.5px; line-height: 1.55; }
-.payment-safety-note { display: block; margin-top: 7px; font-size: 10.5px; }
+.payment-safety-note { display: block; margin-top: 8px; font-size: 10.5px; }
 
 .bank-detail-panel { display: block; }
 .bank-detail-heading { display: flex; justify-content: space-between; align-items: center; gap: 10px; margin-bottom: 10px; }
@@ -1766,6 +1894,270 @@ html.motion-enabled .motion-card {
   color: var(--maroon);
   font-size: 17px;
   font-weight: 700;
+}
+
+/* =====================================================
+   ANIMASI DETEKSI OTOMATIS & PEMBAYARAN SELESAI
+   ===================================================== */
+.payment-auto-tracker {
+  margin-top: 15px;
+  padding-top: 14px;
+  border-top: 1px dashed #dfcbc4;
+}
+
+.tracker-waiting {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 11px 14px;
+  border-radius: 12px;
+  background: #ffffff;
+  border: 1px solid #ead8d2;
+}
+
+.tracker-status-left {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  min-width: 0;
+}
+
+.radar-dot {
+  width: 10px;
+  height: 10px;
+  flex: none;
+  border-radius: 50%;
+  background: #d97706;
+  position: relative;
+}
+
+.radar-dot::after {
+  content: "";
+  position: absolute;
+  inset: -4px;
+  border-radius: 50%;
+  border: 2px solid #d97706;
+  animation: radarPing 1.6s cubic-bezier(0, 0, 0.2, 1) infinite;
+}
+
+@keyframes radarPing {
+  0% { transform: scale(0.7); opacity: 0.9; }
+  100% { transform: scale(2.1); opacity: 0; }
+}
+
+.tracker-status-left strong {
+  display: block;
+  font-size: 12px;
+  color: var(--maroon);
+  line-height: 1.25;
+}
+
+.tracker-status-left span {
+  display: block;
+  font-size: 10.5px;
+  color: var(--muted);
+  line-height: 1.4;
+  margin-top: 2px;
+}
+
+.tracker-confirm-btn {
+  flex: none;
+  padding: 8px 13px;
+  border-radius: 999px;
+  border: 1px solid #16a34a;
+  background: #f0fdf4;
+  color: #15803d;
+  font-size: 11px;
+  font-weight: 700;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background 0.2s ease, color 0.2s ease, transform 0.15s ease;
+}
+
+.tracker-confirm-btn:hover {
+  background: #16a34a;
+  color: #ffffff;
+}
+
+/* State 2: Mendeteksi Pembayaran */
+.tracker-detecting {
+  padding: 13px 15px;
+  border-radius: 12px;
+  background: #fffbeb;
+  border: 1px solid #fde68a;
+}
+
+.tracker-detect-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.detect-spinner {
+  width: 22px;
+  height: 22px;
+  flex: none;
+  border-radius: 50%;
+  border: 2.5px solid #fde68a;
+  border-top-color: #d97706;
+  animation: spinDetect 0.75s linear infinite;
+}
+
+@keyframes spinDetect {
+  to { transform: rotate(360deg); }
+}
+
+.tracker-detect-row strong {
+  display: block;
+  font-size: 12px;
+  color: #92400e;
+}
+
+.tracker-detect-row span {
+  display: block;
+  font-size: 10.5px;
+  color: #b45309;
+}
+
+.detect-progress-bar {
+  margin-top: 10px;
+  height: 5px;
+  border-radius: 999px;
+  background: #fef3c7;
+  overflow: hidden;
+}
+
+.detect-progress-fill {
+  height: 100%;
+  width: 0%;
+  border-radius: 999px;
+  background: linear-gradient(90deg, #d97706, #16a34a);
+  animation: detectFill 1.85s cubic-bezier(.22, 1, .36, 1) forwards;
+}
+
+@keyframes detectFill {
+  0% { width: 8%; }
+  65% { width: 82%; }
+  100% { width: 100%; }
+}
+
+/* State 3: Animasi Checkmark Selesai Pembayaran */
+.tracker-completed {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 14px 16px;
+  border-radius: 14px;
+  background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%);
+  border: 1.5px solid #86efac;
+  box-shadow: 0 8px 24px rgba(22, 163, 74, 0.14);
+  animation: completedPop 0.45s cubic-bezier(.22, 1, .36, 1) both;
+}
+
+@keyframes completedPop {
+  0% { opacity: 0; transform: scale(0.94) translateY(6px); }
+  100% { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+.completed-burst {
+  position: relative;
+  width: 46px;
+  height: 46px;
+  flex: 0 0 46px;
+  display: grid;
+  place-items: center;
+}
+
+.burst-ring {
+  position: absolute;
+  inset: -4px;
+  border-radius: 50%;
+  border: 2px solid #22c55e;
+  animation: burstWave 0.9s cubic-bezier(0, 0, 0.2, 1) forwards;
+}
+
+@keyframes burstWave {
+  0% { transform: scale(0.75); opacity: 0.95; }
+  100% { transform: scale(1.45); opacity: 0; }
+}
+
+.checkmark-svg {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: #16a34a;
+  box-shadow: 0 6px 16px rgba(22, 163, 74, 0.34);
+}
+
+.checkmark-circle {
+  stroke: #ffffff;
+  stroke-width: 2;
+  stroke-dasharray: 152;
+  stroke-dashoffset: 152;
+  opacity: 0.35;
+  animation: strokeDraw 0.5s ease forwards;
+}
+
+.checkmark-check {
+  stroke: #ffffff;
+  stroke-width: 4;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-dasharray: 48;
+  stroke-dashoffset: 48;
+  animation: strokeDraw 0.42s 0.22s cubic-bezier(.22, 1, .36, 1) forwards;
+}
+
+@keyframes strokeDraw {
+  to { stroke-dashoffset: 0; }
+}
+
+.completed-copy {
+  min-width: 0;
+  flex: 1;
+}
+
+.completed-title-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 7px;
+  margin-bottom: 3px;
+}
+
+.completed-title-row strong {
+  font-size: 13px;
+  color: #14532d;
+}
+
+.completed-pill {
+  background: #16a34a;
+  color: #ffffff;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  padding: 2px 8px;
+  border-radius: 999px;
+}
+
+.completed-copy p {
+  margin: 0;
+  font-size: 11px;
+  color: #166534;
+  line-height: 1.45;
+}
+
+.tracker-reset-link {
+  margin-top: 5px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: #15803d;
+  font-size: 10.5px;
+  font-weight: 700;
+  text-decoration: underline;
+  cursor: pointer;
 }
 
 /* Modal Nota — Scroll Native Bebas Hambatan */
@@ -1868,7 +2260,9 @@ body.modal-open { overflow: hidden; }
 .receipt-heading h2 { margin: 4px 0 2px; color: var(--maroon); font-family: var(--font-display); font-weight: 600; font-size: 24px; }
 .receipt-heading p { margin: 0; color: #827276; font-size: 10.5px; }
 .receipt-status-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 10px 13px; border: 1px solid #eddcce; border-radius: 10px; background: #fbf5ef; }
+.receipt-status-row.is-paid { border-color: #86efac; background: #f0fdf4; }
 .receipt-status { color: #87552a; font-size: 9px; font-weight: 700; letter-spacing: .06em; }
+.receipt-status-row.is-paid .receipt-status { color: #15803d; }
 .receipt-code { color: var(--maroon); font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 11px; font-weight: 700; }
 .receipt-info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px 20px; padding: 16px 2px; }
 .receipt-info-grid > div { min-width: 0; display: grid; gap: 3px; }
@@ -1913,8 +2307,11 @@ body.modal-open { overflow: hidden; }
   .payment-option { min-height: 66px; padding: 10px 12px; }
   .payment-option-copy strong { font-size: 12px; }
   .payment-option-copy small { font-size: 10px; }
-  .payment-detail-panel { align-items: flex-start; }
-  .payment-visual-placeholder { flex-basis: 74px; width: 74px; height: 74px; }
+  .qris-showcase-panel { flex-direction: column; align-items: center; text-align: center; }
+  .qris-card-frame { flex: none; width: 175px; }
+  .qris-header-badges, .qris-action-buttons { justify-content: center; }
+  .tracker-waiting { flex-direction: column; align-items: stretch; }
+  .tracker-confirm-btn { width: 100%; text-align: center; }
   .bank-detail-row { align-items: flex-start; }
   .receipt-modal { padding: 12px; }
   .receipt-dialog { max-height: calc(100dvh - 24px); padding: 14px; border-radius: 15px; }
