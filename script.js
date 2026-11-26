@@ -2,16 +2,13 @@
 const ADMIN_WA_NUMBER = "62882020677022";
 
 /*
- * PENGATURAN PEMBAYARAN BATIKWASTRATA.ID
- * Isi setelah mendapatkan detail resmi dari pemilik usaha.
- * qrisImage: nama file gambar QRIS (contoh: "qris-batikwastrata.png")
- * Jangan memakai QRIS/rekening milik orang lain atau data contoh.
+ * PENGATURAN PEMBAYARAN RESMI BATIKWASTRATA.ID
  */
 const PAYMENT_CONFIG = {
-  qrisImage: "",
-  bankName: "",
-  bankAccountNumber: "",
-  bankAccountName: ""
+  qrisImage: "qris_batikwastra.id.jpeg",
+  bankName: "Bank Seabank",
+  bankAccountNumber: "901641802057",
+  bankAccountName: "Muhammad Asri Ardilla"
 };
 
 const siteHeader = document.getElementById('siteHeader');
@@ -350,7 +347,7 @@ document.getElementById('igFillFormBtn').addEventListener('click', () => {
 });
 
 // ==========================================
-// 6. FORM KONSULTASI SEWA & PEMBAYARAN
+// 6. FORM KONSULTASI SEWA, QRIS & DETEKSI PEMBAYARAN
 // ==========================================
 const dateInput = document.getElementById('rentDate');
 const today = new Date();
@@ -365,17 +362,138 @@ const paymentDetailsBox = document.getElementById('paymentDetails');
 const paymentDetailPanels = document.querySelectorAll('[data-payment-detail]');
 const qrisVisual = document.getElementById('qrisVisual');
 const qrisMessage = document.getElementById('qrisMessage');
+const qrisActionButtons = document.getElementById('qrisActionButtons');
+const downloadQrisBtn = document.getElementById('downloadQrisBtn');
+const zoomQrisBtn = document.getElementById('zoomQrisBtn');
 const bankNameLabel = document.getElementById('bankNameLabel');
 const bankNumberLabel = document.getElementById('bankNumberLabel');
 const bankOwnerLabel = document.getElementById('bankOwnerLabel');
 const bankMessage = document.getElementById('bankMessage');
 const copyAccountBtn = document.getElementById('copyAccountBtn');
 
+// State Deteksi Pembayaran Otomatis
+const paymentAutoTracker = document.getElementById('paymentAutoTracker');
+const trackerWaitingView = paymentAutoTracker.querySelector('.tracker-waiting');
+const trackerDetectingView = paymentAutoTracker.querySelector('.tracker-detecting');
+const trackerCompletedView = paymentAutoTracker.querySelector('.tracker-completed');
+const trackerWaitingHint = document.getElementById('trackerWaitingHint');
+const completedTimeText = document.getElementById('completedTimeText');
+const confirmPaidBtn = document.getElementById('confirmPaidBtn');
+const resetPaidStateBtn = document.getElementById('resetPaidStateBtn');
+
+let paymentStatusState = 'waiting'; // 'waiting' | 'detecting' | 'completed'
+let paymentCompletedAt = '';
+let hasInteractedWithPayment = false;
+let leftPageAtTimestamp = 0;
+let detectTimer = null;
+
+function setPaymentTrackerState(newState) {
+  paymentStatusState = newState;
+  paymentAutoTracker.dataset.state = newState;
+
+  trackerWaitingView.hidden = newState !== 'waiting';
+  trackerDetectingView.hidden = newState !== 'detecting';
+  trackerCompletedView.hidden = newState !== 'completed';
+
+  if (newState === 'completed') {
+    paymentCompletedAt = new Date().toLocaleString('id-ID', {
+      day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit'
+    });
+    completedTimeText.textContent = `Pembayaran dicatat pada ${paymentCompletedAt} · Otomatis terlampir di nota & WhatsApp Admin.`;
+  } else {
+    paymentCompletedAt = '';
+  }
+}
+
+function triggerAutoPaymentDetection() {
+  if (paymentStatusState !== 'waiting') return;
+  clearTimeout(detectTimer);
+  setPaymentTrackerState('detecting');
+
+  detectTimer = setTimeout(() => {
+    setPaymentTrackerState('completed');
+  }, 1900);
+}
+
+confirmPaidBtn.addEventListener('click', () => {
+  triggerAutoPaymentDetection();
+});
+
+resetPaidStateBtn.addEventListener('click', () => {
+  clearTimeout(detectTimer);
+  hasInteractedWithPayment = false;
+  setPaymentTrackerState('waiting');
+});
+
+// Deteksi otomatis saat pelanggan berpindah ke aplikasi e-wallet/m-banking lalu kembali ke tab ini
+document.addEventListener('visibilitychange', () => {
+  if (document.hidden) {
+    if (hasInteractedWithPayment && paymentStatusState === 'waiting') {
+      leftPageAtTimestamp = Date.now();
+    }
+  } else if (
+    hasInteractedWithPayment &&
+    paymentStatusState === 'waiting' &&
+    leftPageAtTimestamp > 0 &&
+    Date.now() - leftPageAtTimestamp >= 2000
+  ) {
+    leftPageAtTimestamp = 0;
+    triggerAutoPaymentDetection();
+  }
+});
+
+// Download Gambar QRIS untuk Pelanggan (mendukung http/https maupun file:///)
+async function downloadQrisForCustomer() {
+  if (!PAYMENT_CONFIG.qrisImage) return;
+  const fileName = 'QRIS-BatikWastrata.id.jpeg';
+  hasInteractedWithPayment = true;
+
+  const originalHtml = downloadQrisBtn.innerHTML;
+  downloadQrisBtn.textContent = 'Mengunduh QRIS...';
+
+  try {
+    const response = await fetch(PAYMENT_CONFIG.qrisImage);
+    const blob = await response.blob();
+    const blobUrl = URL.createObjectURL(blob);
+    triggerFileDownload(blobUrl, fileName);
+    setTimeout(() => URL.revokeObjectURL(blobUrl), 2000);
+  } catch {
+    // Fallback langsung jika dibuka via file:///
+    triggerFileDownload(PAYMENT_CONFIG.qrisImage, fileName);
+  }
+
+  downloadQrisBtn.innerHTML = 'QRIS Terunduh ✓';
+  trackerWaitingHint.textContent = 'QRIS terunduh! Buka aplikasi e-wallet/m-banking untuk scan, lalu kembali ke sini.';
+  setTimeout(() => {
+    downloadQrisBtn.innerHTML = originalHtml;
+  }, 2600);
+}
+
+function openQrisZoom() {
+  if (!PAYMENT_CONFIG.qrisImage) return;
+  hasInteractedWithPayment = true;
+  openLightbox(
+    PAYMENT_CONFIG.qrisImage,
+    'QRIS Resmi — BATIKWASTRATA.ID',
+    'contain',
+    true
+  );
+}
+
 function updatePaymentDetails(method) {
   paymentDetailsBox.hidden = !method;
   paymentDetailPanels.forEach(panel => {
     panel.hidden = panel.dataset.paymentDetail !== method;
   });
+
+  // Tampilkan tracker deteksi otomatis untuk QRIS dan Transfer Bank
+  const needsTracker = method === 'QRIS' || method === 'Transfer Bank';
+  paymentAutoTracker.hidden = !needsTracker;
+  if (needsTracker && paymentStatusState === 'waiting') {
+    trackerWaitingHint.textContent = method === 'QRIS'
+      ? 'Unduh QRIS / pindai kode, lalu bayar. Sistem otomatis mendeteksi saat kamu kembali.'
+      : 'Salin nomor rekening & transfer, sistem otomatis mendeteksi saat kamu kembali.';
+  }
 
   if (method === 'QRIS') {
     qrisVisual.innerHTML = '';
@@ -384,12 +502,20 @@ function updatePaymentDetails(method) {
       image.src = PAYMENT_CONFIG.qrisImage;
       image.alt = 'Kode QRIS resmi BatikWastrata.id';
       qrisVisual.appendChild(image);
-      qrisMessage.textContent = 'Scan kode QRIS resmi di atas setelah admin mengonfirmasi total pembayaran.';
+
+      const zoomBadge = document.createElement('span');
+      zoomBadge.className = 'qris-zoom-badge';
+      zoomBadge.textContent = '🔍 Perbesar';
+      qrisVisual.appendChild(zoomBadge);
+
+      qrisActionButtons.hidden = false;
+      qrisMessage.textContent = 'Unduh atau perbesar kode QRIS di samping, lalu pindai melalui aplikasi e-wallet atau mobile banking setelah nominal sewa dikonfirmasi admin.';
     } else {
       const placeholder = document.createElement('span');
       placeholder.className = 'placeholder-qr';
       placeholder.textContent = 'QR';
       qrisVisual.appendChild(placeholder);
+      qrisActionButtons.hidden = true;
       qrisMessage.textContent = 'Kode QRIS resmi belum dipasang. Admin akan mengirimkan kode QR setelah pesanan dan nominal pembayaran dikonfirmasi.';
     }
   }
@@ -406,15 +532,30 @@ function updatePaymentDetails(method) {
   }
 }
 
+qrisVisual.addEventListener('click', openQrisZoom);
+qrisVisual.addEventListener('keydown', (e) => {
+  if (e.key === 'Enter' || e.key === ' ') {
+    e.preventDefault();
+    openQrisZoom();
+  }
+});
+zoomQrisBtn.addEventListener('click', openQrisZoom);
+downloadQrisBtn.addEventListener('click', downloadQrisForCustomer);
+
 paymentRadios.forEach(radio => {
   radio.addEventListener('change', () => updatePaymentDetails(radio.value));
 });
 
 copyAccountBtn.addEventListener('click', async () => {
   if (!PAYMENT_CONFIG.bankAccountNumber) return;
+  hasInteractedWithPayment = true;
   try {
     await navigator.clipboard.writeText(PAYMENT_CONFIG.bankAccountNumber);
     copyAccountBtn.textContent = 'Nomor rekening tersalin ✓';
+    trackerWaitingHint.textContent = 'Nomor rekening tersalin! Silakan transfer melalui m-banking, lalu kembali ke sini.';
+    setTimeout(() => {
+      copyAccountBtn.textContent = 'Salin nomor rekening';
+    }, 2500);
   } catch {
     bankMessage.textContent = 'Browser tidak mengizinkan salin otomatis. Silakan pilih dan salin nomor rekening secara manual.';
   }
@@ -474,7 +615,8 @@ function encodeNotaPayload(data) {
       a: data.area,
       m: data.paymentMethod,
       i: data.igLink || '',
-      o: data.notes || ''
+      o: data.notes || '',
+      s: data.paidAt || ''
     };
     const json = JSON.stringify(compact);
     const bytes = new TextEncoder().encode(json);
@@ -504,7 +646,8 @@ function decodeNotaPayload(token) {
       area: String(obj.a || '-'),
       paymentMethod: String(obj.m || '-'),
       igLink: String(obj.i || ''),
-      notes: String(obj.o || '')
+      notes: String(obj.o || ''),
+      paidAt: String(obj.s || '')
     };
   } catch {
     return null;
@@ -527,6 +670,20 @@ function buildAdminAutoDownloadUrl(data) {
 function populateReceiptDOM(data) {
   currentNotaData = data;
   hasDownloadedCurrentNota = false;
+
+  const receiptStatusRow = document.getElementById('receiptStatusRow');
+  const receiptStatusBadge = document.getElementById('receiptStatusBadge');
+  const receiptPaidTimeRow = document.getElementById('receiptPaidTimeRow');
+  const receiptPaidTime = document.getElementById('receiptPaidTime');
+
+  const isPaid = Boolean(data.paidAt);
+  receiptStatusRow.classList.toggle('is-paid', isPaid);
+  receiptStatusBadge.textContent = isPaid
+    ? '✓ PEMBAYARAN SELESAI (VERIFIKASI ADMIN)'
+    : 'MENUNGGU KONFIRMASI ADMIN';
+
+  receiptPaidTimeRow.hidden = !isPaid;
+  receiptPaidTime.textContent = isPaid ? `Sudah dibayar (${data.paidAt})` : '-';
 
   document.getElementById('receiptCode').textContent = data.bookingCode;
   document.getElementById('receiptCreated').textContent = data.createdAt;
@@ -556,13 +713,14 @@ function showDownloadToast(message) {
 function renderReceiptToCanvas2D(data) {
   const scale = 2;
   const width = 640;
+  const isPaid = Boolean(data.paidAt);
   const rows = [
     ['Tanggal dibuat', data.createdAt, 'Nama pelanggan', data.name],
     ['Koleksi pilihan', data.product, 'Tanggal penggunaan', data.formattedDate],
     ['Lokasi', data.area, 'Metode pembayaran', data.paymentMethod]
   ];
 
-  const extraHeight = (data.igLink ? 52 : 0) + (data.notes ? 52 : 0);
+  const extraHeight = (isPaid ? 52 : 0) + (data.igLink ? 52 : 0) + (data.notes ? 52 : 0);
   const height = 650 + extraHeight;
 
   const canvas = document.createElement('canvas');
@@ -639,14 +797,14 @@ function renderReceiptToCanvas2D(data) {
 
   // Kotak Status & Kode Booking
   ctx.textAlign = 'left';
-  ctx.fillStyle = '#FBF5EF';
+  ctx.fillStyle = isPaid ? '#F0FDF4' : '#FBF5EF';
   ctx.fillRect(36, 196, width - 72, 42);
-  ctx.strokeStyle = '#EDDCCE';
+  ctx.strokeStyle = isPaid ? '#86EFAC' : '#EDDCCE';
   ctx.strokeRect(36, 196, width - 72, 42);
 
-  ctx.fillStyle = '#87552A';
+  ctx.fillStyle = isPaid ? '#15803D' : '#87552A';
   ctx.font = 'bold 11px "DM Sans", Arial, sans-serif';
-  ctx.fillText('MENUNGGU KONFIRMASI ADMIN', 52, 221);
+  ctx.fillText(isPaid ? '✓ PEMBAYARAN SELESAI (VERIFIKASI ADMIN)' : 'MENUNGGU KONFIRMASI ADMIN', 52, 221);
 
   ctx.textAlign = 'right';
   ctx.fillStyle = '#6B1724';
@@ -668,6 +826,16 @@ function renderReceiptToCanvas2D(data) {
     ctx.fillText(v2.slice(0, 34), width / 2 + 12, y + 20);
     y += 58;
   });
+
+  if (isPaid) {
+    ctx.fillStyle = '#958589';
+    ctx.font = '12px "DM Sans", Arial, sans-serif';
+    ctx.fillText('Status pembayaran pelanggan', 38, y);
+    ctx.fillStyle = '#15803D';
+    ctx.font = 'bold 13px "DM Sans", Arial, sans-serif';
+    ctx.fillText(`Sudah dibayar (${data.paidAt})`, 38, y + 20);
+    y += 52;
+  }
 
   if (data.igLink) {
     ctx.fillStyle = '#958589';
@@ -791,6 +959,10 @@ document.getElementById('rentForm').addEventListener('submit', event => {
     day: 'numeric', month: 'long', year: 'numeric', hour: '2-digit', minute: '2-digit'
   });
 
+  const paidAt = (paymentMethod === 'QRIS' || paymentMethod === 'Transfer Bank') && paymentStatusState === 'completed'
+    ? paymentCompletedAt
+    : '';
+
   const notaData = {
     bookingCode,
     createdAt,
@@ -800,7 +972,8 @@ document.getElementById('rentForm').addEventListener('submit', event => {
     area,
     paymentMethod,
     igLink,
-    notes
+    notes,
+    paidAt
   };
 
   populateReceiptDOM(notaData);
@@ -815,9 +988,14 @@ document.getElementById('rentForm').addEventListener('submit', event => {
     ? `\n\n📥 *Unduh Otomatis Nota Admin:*\n${adminAutoLink}`
     : '';
 
-  const paymentRequest = paymentMethod === 'Tunai'
-    ? 'Saya memilih pembayaran tunai saat pengambilan, sesuai kesepakatan dengan admin.'
-    : `Saya memilih pembayaran ${paymentMethod}. Mohon kirimkan detail pembayaran resmi setelah total biaya dikonfirmasi.`;
+  let paymentRequest = '';
+  if (paidAt) {
+    paymentRequest = `✅ *Status Pembayaran:* Sudah dibayar via ${paymentMethod} pada ${paidAt}. Mohon verifikasi bukti/mutasi pembayaran.`;
+  } else if (paymentMethod === 'Tunai') {
+    paymentRequest = 'Saya memilih pembayaran tunai saat pengambilan, sesuai kesepakatan dengan admin.';
+  } else {
+    paymentRequest = `Saya memilih pembayaran ${paymentMethod}. Mohon kirimkan detail/total biaya resmi untuk dikonfirmasi.`;
+  }
 
   const message = `Halo Admin BatikWastrata.id, saya ingin mengonfirmasi permintaan sewa berikut.\n\nKode booking: ${bookingCode}\nNama: ${name}\nKoleksi: ${product}${photoAttachment}\nTanggal penggunaan: ${formattedDate}\nLokasi: ${area}\nMetode pembayaran: ${paymentMethod}${notes ? `\nCatatan: ${notes}` : ''}\n\n${paymentRequest}\nMohon konfirmasi ketersediaan, total biaya, dan ketentuan sewanya. Terima kasih.${adminLinkLine}`;
 
@@ -888,17 +1066,21 @@ function checkIncomingAdminNotaFromUrl() {
 window.addEventListener('DOMContentLoaded', checkIncomingAdminNotaFromUrl);
 
 // ==========================================
-// 9. LIGHTBOX PRATINJAU GAMBAR
+// 9. LIGHTBOX PRATINJAU GAMBAR (Koleksi & QRIS)
 // ==========================================
 const lightbox = document.getElementById('imageLightbox');
 const lightboxImg = document.getElementById('lightboxImg');
 const lightboxCaption = document.getElementById('lightboxCaption');
 const lightboxClose = document.getElementById('lightboxClose');
+const lightboxDownloadBtn = document.getElementById('lightboxDownloadBtn');
 
-function openLightbox(src, caption) {
+function openLightbox(src, caption, fit = 'cover', showDownload = false) {
   lightboxImg.src = src;
   lightboxImg.alt = caption || 'Pratinjau Koleksi';
+  lightboxImg.style.objectFit = fit;
+  lightboxImg.style.background = fit === 'contain' ? '#ffffff' : 'transparent';
   lightboxCaption.textContent = caption || '';
+  lightboxDownloadBtn.hidden = !showDownload;
   lightbox.classList.add('open');
   lightbox.setAttribute('aria-hidden', 'false');
   if (lenis) lenis.stop();
@@ -910,9 +1092,13 @@ function closeLightbox() {
   if (lenis) lenis.start();
 }
 
+lightboxDownloadBtn.addEventListener('click', () => {
+  downloadQrisForCustomer();
+});
+
 document.querySelectorAll('.product-visual').forEach(box => {
   box.addEventListener('click', () => {
-    openLightbox(box.dataset.zoomSrc, box.dataset.zoomTitle);
+    openLightbox(box.dataset.zoomSrc, box.dataset.zoomTitle, 'cover', false);
   });
 });
 
